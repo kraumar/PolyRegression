@@ -4,9 +4,10 @@ from sklearn.preprocessing import PolynomialFeatures
 from automobileRegression.dataConverter import replace_cat, replace_dum, delete_missing
 from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
-import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import make_pipeline
+import numpy as np
+
 
 lm = linear_model.LinearRegression()
 
@@ -59,8 +60,29 @@ def polynomial_kcrossVal_cat(df_copy, ind_var, dep_var, mapX, k):
     print(np.abs(grid.best_score_))
     print(grid.best_params_)
 
-
-
+def multi_ind_gridCV(X, y):
+    bool_tab = [True, False]
+    best_degree = -1
+    best_score = -1
+    best_param1 = False
+    best_param2 = False
+    for i in range(1, 6):
+        for x in bool_tab:
+            for j in bool_tab:
+                poly = PolynomialFeatures(degree=i)
+                lm = linear_model.LinearRegression(fit_intercept=x, normalize=j)
+                polyX = poly.fit_transform(X)
+                model = lm.fit(polyX, y)
+                scores = cross_val_score(model, polyX, y, cv=10, scoring='r2')
+                score = np.mean(np.abs(scores))
+                if score > best_score and score <= 1:
+                    best_score = score
+                    best_degree = i
+                    best_param1 = x
+                    best_param2 = j
+    print("{degree: " + str(best_degree) + ", fit_intercept: " + str(best_param1) + ", normalize: " +
+          str(best_param2) + "}")
+    print("r2 score: " + str(best_score))
 
 
 

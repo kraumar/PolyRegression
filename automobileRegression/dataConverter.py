@@ -17,3 +17,4 @@ def delete_missing(df, col_names): # (df, ['arg1', ...., 'argn'])
     new_df_copy = new_df_copy[col_names].replace('?', np.NaN)
     #remowe rows a return
     return new_df_copy.dropna()
+
